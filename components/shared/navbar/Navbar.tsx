@@ -20,7 +20,7 @@ const Navbar = () => {
             height={23}
             alt='DevFlow'
             />
-            <p className='h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden'>Dev <span className='text-primary-500'>Flow</span></p>
+            <p className='h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden'>DevFor<span className='text-primary-500'>Flow</span></p>
         </Link>
         <GlobalSearch />
         <div className='flex-between gap-5'>
