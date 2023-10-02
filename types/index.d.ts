@@ -1,18 +1,24 @@
 import { BADGE_CRITERIA } from "@/constants";
 
+export interface Questions {
+    _id: string,
+    question: string,
+    tags: Array,
+    user: string,
+    date: string,
+    upvotes: number,
+    answers: number,
+    views: number,
+}
+
 export interface Filters {
   _id: number,
   name: string,
   highlight?: boolean
 }
 
-export interface Questions {
-  _id: number,
-  title: string,
-}
-
 export interface PopularTags {
-  _id: number,
+  _id: string,
   name: string,
   totalQuestions: number
 }

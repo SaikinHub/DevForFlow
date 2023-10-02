@@ -1,9 +1,34 @@
 import Link from 'next/link'
-import {Button} from '@/components/ui/button'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
-import Filter from '@/components/shared/search/Filter'
-import { filters } from '@/constants/constants'
+import Filter from '@/components/shared/Filter'
+import QuestionCard from '@/components/cards/QuestionCard'
+import {Button} from '@/components/ui/button'
+import { HomePageFilters } from '@/constants/filters'
+import HomeFilters from '@/components/home/HomeFilters'
+import NoResult from '@/components/NoResult'
 
+const questions = [
+  {
+    _id: "1", 
+    title: "Cascading Deletes in SQLAIchemy?", 
+    tags: [{_id: "1", name: "python",}, {_id: "2", name: "sql"}],
+    author: {_id: "1", name: "John Doe", picture: "/assets/icons/avatar.svg"},
+    upvotes: 13215489,
+    views: 100,
+    answers: [],
+    createdAt: new Date('2000-10-02T12:00:00Z')
+  },
+  {
+    _id: "2", 
+    title: "How to center a div?", 
+    tags: [{_id: "1", name: "css",}, {_id: "2", name: "sql",}],
+    author: {_id: "1", name: "John Doe", picture: "/assets/icons/avatar.svg"},
+    upvotes: 10,
+    views: 2190,
+    answers: [],
+    createdAt: new Date('2020-09-15T12:00:00Z')
+  },
+]
 
 export default function Home() {
   return (
@@ -22,20 +47,33 @@ export default function Home() {
           route="/"
           iconPosition="left"
           imgScr="/assets/icons/search.svg"
-          placeholder="Searchfor questions"
+          placeholder="Search questions..."
           otherClasses="flex-1"
         />
-
-        <div className='flex gap-3'>
-          {filters.map((filter) => (
-            <Filter
-              key={filter._id}
-              name={filter.name}
-              highlight={filter?.highlight}
-            />
-          ))}
+        <div className='md:hidden'>
+          <Filter
+            filters={HomePageFilters}
+            otherClasses="min-h-[56px] sm:min-w-[170px]"
+            containerClasses="hidden max-md:flex"
+          />
         </div>
       </div>
+        <HomeFilters />
+        <div className='mt-10 flex w-full flex-col gap-6'>
+          {questions.length > 0 ? (
+            questions.map((question) => (
+              <QuestionCard 
+                key={question._id}
+                {...question}
+              />
+            )))
+          : <NoResult
+              title="There's no question to show"
+              description="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
+              link="/ask-question"
+              linkTitle="Ask a Question"
+          />}
+        </div>
     </>
   )
 }
