@@ -13,20 +13,15 @@ interface UsersProps {
     name: string;
     username: string;
   };
-  tags: {
-    _id: string;
-    name: string;
-  }[];
 }
 
 const UserCard = async ({
   user: { _id, clerkId, picture, name, username },
-  tags,
 }: UsersProps) => {
   const interactedTags = await getTopInteractedTags({ userId: _id });
   return (
     <Link
-      href={`profile/${clerkId}`}
+      href={`/profile/${clerkId}`}
       className="shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]"
     >
       <article className="background-light900_dark200 light-border flex w-full flex-col items-center rounded-2xl border p-8">
@@ -53,12 +48,6 @@ const UserCard = async ({
           )}
         </div>
       </article>
-      {/* <div className="background-light900_dark200  flex h-[280px] w-[260px] flex-col items-center justify-center  rounded-[10px]">
-        <Link
-          href={`profile/${clerkId}`}
-          className="flex flex-col items-center justify-center "
-        ></Link>
-      </div> */}
     </Link>
   );
 };
