@@ -1,29 +1,42 @@
-/*
-    Think of what params you need to include to create an answer.
-    Take heavy inspiration of all actions created so far.
-    Add the created answer to a question.
-    Don't forget to revalidate the path.
-
-        content: string;
-        author: string; // User ID
-        question: string; // Question ID
-        path: string;
-*/
+'use server';
 import Answer from '@/database/answer.model';
 import { connectToDatabase } from '../mongoose';
-import { CreateAnswerParams } from './shared.types';
+import { CreateAnswerParams, GetAnswersParams } from './shared.types';
 import { revalidatePath } from 'next/cache';
+import Question from '@/database/question.model';
+import User from '@/database/user.model';
 
-export const createAnswer = (params: CreateAnswerParams) => {
+export const createAnswer = async (params: CreateAnswerParams) => {
   const { content, author, question, path } = params;
   try {
     connectToDatabase();
-    Answer.create({
+    const newAnswer = await Answer.create({
       content,
       author,
       question,
     });
+    await Question.findByIdAndUpdate(question, {
+      $push: { answers: newAnswer._id },
+    });
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAnswers = async (params: GetAnswersParams) => {
+  const { questionId } = params;
+  try {
+    connectToDatabase();
+    const answers = await Answer.find({ question: questionId })
+      .populate({
+        path: 'author',
+        model: User,
+        select: '_id clerkId name username picture',
+      })
+      .sort({ createdAt: -1 });
+    return { answers };
   } catch (error) {
     console.log(error);
     throw error;

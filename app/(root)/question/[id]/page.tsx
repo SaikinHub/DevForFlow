@@ -1,17 +1,27 @@
 import Answer from '@/components/forms/Answer';
+import AllAnswers from '@/components/shared/AllAnswers';
 import Metric from '@/components/shared/Metric';
 import ParseHTML from '@/components/shared/ParseHTML';
 import RenderTag from '@/components/shared/RenderTag';
+import Votes from '@/components/shared/Votes';
 import { getQuestionById } from '@/lib/actions/question.action';
+import { getUserById } from '@/lib/actions/user.action';
 import { formatNumberWithSuffix, getTimeStamp } from '@/lib/utils';
+import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
 const page = async ({ params }) => {
   const result = await getQuestionById({ questionId: params.id });
-  const { title, author, createdAt, answers, views, content, tags } =
+  const { _id, title, author, createdAt, answers, views, content, tags } =
     result.question;
+  const { userId: clerkId } = auth();
+  let mongoUser;
+
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
+  }
   return (
     <>
       <div className="flex-start w-full flex-col">
@@ -31,7 +41,9 @@ const page = async ({ params }) => {
               {author.name}
             </p>
           </Link>
-          <div className="flex justify-end">Voting !</div>
+          <div className="flex justify-end">
+            <Votes />
+          </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900  mt-3 w-full text-left">
           {title}
@@ -72,7 +84,16 @@ const page = async ({ params }) => {
           />
         ))}
       </div>
-      <Answer />
+      <AllAnswers
+        userId={JSON.stringify(mongoUser._id)}
+        questionId={_id}
+        totalAnswers={answers.length}
+      />
+      <Answer
+        authorId={JSON.stringify(mongoUser._id)}
+        question={content}
+        questionId={JSON.stringify(_id)}
+      />
     </>
   );
 };
