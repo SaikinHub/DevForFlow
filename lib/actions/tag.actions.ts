@@ -7,7 +7,7 @@ import Tag from '@/database/tag.model';
 
 export async function getAllTags(params: GetAllTagsParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const { page = 1, pageSize = 20, filter, searchQuery } = params;
     const tags = await Tag.find({});
     return { tags };
@@ -19,7 +19,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { userId } = params;
     const user = await User.findById(userId);
