@@ -17,7 +17,7 @@ interface QuestionsProps {
     username: string;
     picture: string;
   };
-  upvotes: Array<object>;
+  upvotes: string[];
   views: number;
   answers: Array<object>;
   createdAt: Date;
@@ -66,21 +66,21 @@ const QuestionCard = ({
           imgUrl="/assets/icons/like.svg"
           alt="Upvotes"
           value={formatNumberWithSuffix(upvotes.length)}
-          title=" Votes"
+          title={upvotes.length > 1 ? ' Votes' : 'Vote'}
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
           imgUrl="/assets/icons/message.svg"
           alt="message"
           value={formatNumberWithSuffix(answers.length)}
-          title=" Answers"
+          title={answers.length > 1 ? ' Answers' : 'Answer'}
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
           imgUrl="/assets/icons/eye.svg"
           alt="eye"
           value={formatNumberWithSuffix(views)}
-          title=" Views"
+          title={views > 1 ? ' Views' : 'View'}
           textStyles="small-medium text-dark400_light800"
         />
       </div>
