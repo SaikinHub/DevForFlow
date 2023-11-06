@@ -12,10 +12,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-const page = async ({ params }) => {
+interface Props {
+  params: { id: string };
+}
+
+const page = async ({ params }: Props) => {
   const result = await getQuestionById({ questionId: params.id });
-  const { _id, title, author, createdAt, answers, views, content, tags } =
-    result.question;
+
+  const {
+    _id,
+    title,
+    author,
+    createdAt,
+    answers,
+    views,
+    content,
+    tags,
+    upvotes,
+    downvotes,
+  } = result.question;
   const { userId: clerkId } = auth();
   let mongoUser;
 
@@ -42,7 +57,16 @@ const page = async ({ params }) => {
             </p>
           </Link>
           <div className="flex justify-end">
-            <Votes />
+            <Votes
+              type="question"
+              itemId={JSON.stringify(_id)}
+              userId={JSON.stringify(mongoUser._id)}
+              hasUpvoted={upvotes.includes(mongoUser._id)}
+              hasDownvoted={downvotes.includes(mongoUser._id)}
+              upvotes={upvotes.length}
+              downvotes={downvotes.length}
+              hasSaved={mongoUser?.saved.includes(_id)}
+            />
           </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900  mt-3 w-full text-left">
@@ -85,7 +109,7 @@ const page = async ({ params }) => {
         ))}
       </div>
       <AllAnswers
-        userId={JSON.stringify(mongoUser._id)}
+        userId={mongoUser._id}
         questionId={_id}
         totalAnswers={answers.length}
       />

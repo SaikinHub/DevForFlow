@@ -13,8 +13,8 @@ const AnswerSchema = new Schema({
   content: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
   question: { type: Schema.Types.ObjectId, required: true, ref: 'Question' },
-  upvotes: { type: Schema.Types.ObjectId, ref: 'User' },
-  downvotes: { type: Schema.Types.ObjectId, ref: 'User' },
+  upvotes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  downvotes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   createdAt: { type: Date, default: Date.now },
 });
 

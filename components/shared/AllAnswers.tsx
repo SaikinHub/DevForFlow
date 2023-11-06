@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTimeStamp } from '@/lib/utils';
 import ParseHTML from './ParseHTML';
+import Votes from './Votes';
 
 interface Props {
   questionId: string;
@@ -28,9 +29,9 @@ const AllAnswers = async ({
     <div className="mt-11">
       <div className="flex items-center justify-between">
         <h3 className="primary-text-gradient">
-          {totalAnswers > 1
-            ? `${totalAnswers} Answers`
-            : `${totalAnswers} Answer`}
+          {totalAnswers === 0 && 'No answer'}
+          {totalAnswers === 1 && '1 answer'}
+          {totalAnswers > 1 && `${totalAnswers} answers`}
         </h3>
         <Filter filters={AnswerFilters} />
       </div>
@@ -59,7 +60,17 @@ const AllAnswers = async ({
                     </p>
                   </div>
                 </Link>
-                <div className="flex justify-end">VOTIN !</div>
+                <div className="flex ">
+                  <Votes
+                    type="answer"
+                    itemId={JSON.stringify(answer._id)}
+                    userId={JSON.stringify(userId)}
+                    upvotes={answer.upvotes.length}
+                    downvotes={answer.downvotes.length}
+                    hasDownvoted={answer.downvotes.includes(userId)}
+                    hasUpvoted={answer.upvotes.includes(userId)}
+                  />
+                </div>
               </div>
             </div>
             <ParseHTML data={answer.content} />

@@ -8,13 +8,13 @@ import {
   CreateQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
+  QuestionVoteParams,
 } from './shared.types';
 import { revalidatePath } from 'next/cache';
-import console from 'console';
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { questionId } = params;
 
@@ -34,7 +34,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const questions = await Question.find({})
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
@@ -49,7 +49,7 @@ export async function getQuestions(params: GetQuestionsParams) {
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const { title, content, tags, author, path } = params;
 
     const question = await Question.create({
@@ -76,3 +76,62 @@ export async function createQuestion(params: CreateQuestionParams) {
     revalidatePath(path);
   } catch (error) {}
 }
+
+export const upvoteQuestion = async (params: QuestionVoteParams) => {
+  try {
+    await connectToDatabase();
+    const { itemId, userId, hasDownvoted, hasUpvoted, path } = params;
+    let updateQuery = {};
+    if (hasUpvoted) {
+      updateQuery = { $pull: { upvotes: userId } };
+    } else if (hasDownvoted) {
+      updateQuery = {
+        $pull: { downvotes: userId },
+        $push: { upvotes: userId },
+      };
+    } else {
+      updateQuery = { $addToSet: { upvotes: userId } };
+    }
+
+    const question = await Question.findByIdAndUpdate(itemId, updateQuery, {
+      new: true,
+    });
+
+    if (!question) {
+      throw new Error('Question not found');
+    }
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const downvoteQuestion = async (params: QuestionVoteParams) => {
+  try {
+    await connectToDatabase();
+    const { itemId, userId, hasDownvoted, hasUpvoted, path } = params;
+    let updateQuery = {};
+    if (hasDownvoted) {
+      updateQuery = { $pull: { downvotes: userId } };
+    } else if (hasUpvoted) {
+      updateQuery = {
+        $pull: { upvotes: userId },
+        $push: { downvotes: userId },
+      };
+    } else {
+      updateQuery = { $addToSet: { downvotes: userId } };
+    }
+    const question = await Question.findByIdAndUpdate(itemId, updateQuery, {
+      new: true,
+    });
+
+    if (!question) {
+      throw new Error('Question not found');
+    }
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
