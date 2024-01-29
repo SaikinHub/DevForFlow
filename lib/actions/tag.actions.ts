@@ -15,7 +15,36 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     await connectToDatabase();
     const { page = 1, pageSize = 20, filter, searchQuery } = params;
-    const tags = await Tag.find({});
+
+    const query: FilterQuery<typeof Tag> = {};
+
+    if(searchQuery) {
+      query.$or = [
+        {name: {$regex: new RegExp(searchQuery, 'i')}},
+        {description: {$regex: new RegExp(searchQuery, 'i')}},
+      ]
+    }
+
+    let sortOptions = {}
+
+    switch (filter) {
+      case 'popular':
+        sortOptions = {questions: -1}          
+        break;
+      case 'recent':
+        sortOptions = {createdAt: -1}          
+        break;
+      case 'name':
+        sortOptions = {name: 1}          
+        break;
+      case 'old':
+        sortOptions = {createdAt: 1}          
+        break;    
+      default:
+        break;
+    }
+
+    const tags = await Tag.find(query).sort(sortOptions);
     return { tags };
   } catch (error) {
     console.log(error);
@@ -34,7 +63,7 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
       path: 'questions',
       model: Question,
       match: searchQuery
-        ? { title: { $reget: searchQuery, $options: 'i' } }
+        ? { title: { $regex: searchQuery, $options: 'i' } }
         : {},
       options: {
         sort: { createdAt: -1 },
@@ -76,4 +105,19 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     console.log(error);
     throw error;
   }
+}
+
+
+export async function getTopPopularTags() {
+  try {
+    await connectToDatabase();
+
+    const popularTags = await Tag.aggregate([
+      {$project: {name: 1, numberOfQuestions: {$size: "$questions"}}},
+      {$sort: {numberOfQuestions: -1}},
+      {$limit: 5}
+    ])
+    
+    return popularTags;
+  } catch (error) {}
 }

@@ -15,14 +15,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
   });
 
   const { tagTitle, questions } = results;
-  console.log(questions[0].author);
 
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">{tagTitle}</h1>
       <div className="mt-11 w-full">
         <LocalSearchbar
-          route="/"
+          route={`/tags/${params.id}`}
           iconPosition="left"
           imgScr="/assets/icons/search.svg"
           placeholder="Search questions by tag..."

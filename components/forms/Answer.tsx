@@ -27,7 +27,7 @@ interface Props {
 
 const Answer = ({ question, questionId, authorId }: Props) => {
   const pathname = usePathname();
-  const [isSumbitting, setIsSumbitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { mode } = useTheme();
   const editorRef = useRef(null);
   const form = useForm<z.infer<typeof AnswerSchema>>({
@@ -38,7 +38,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
   });
 
   const handleCreateAnswer = async (values: z.infer<typeof AnswerSchema>) => {
-    setIsSumbitting(true);
+    setIsSubmitting(true);
     try {
       await createAnswer({
         content: values.answer,
@@ -54,7 +54,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsSumbitting(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -137,9 +137,9 @@ const Answer = ({ question, questionId, authorId }: Props) => {
             <Button
               type="submit"
               className="primary-gradient w-fit text-white"
-              disabled={isSumbitting}
+              disabled={isSubmitting}
             >
-              {isSumbitting ? 'Submitting...' : 'Submit'}
+              {isSubmitting ? 'Submitting...' : 'Submit'}
             </Button>
           </div>
         </form>

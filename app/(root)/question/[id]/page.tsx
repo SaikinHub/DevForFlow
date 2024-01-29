@@ -10,13 +10,15 @@ import { formatNumberWithSuffix, getTimeStamp } from '@/lib/utils';
 import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import React from 'react';
 
 interface Props {
   params: { id: string };
 }
 
-const page = async ({ params }: Props) => {
+const page = async ({ params, searchParams }: Props) => {
+
   const result = await getQuestionById({ questionId: params.id });
 
   const {
@@ -112,6 +114,8 @@ const page = async ({ params }: Props) => {
         userId={mongoUser._id}
         questionId={_id}
         totalAnswers={answers.length}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
       <Answer
         authorId={JSON.stringify(mongoUser._id)}

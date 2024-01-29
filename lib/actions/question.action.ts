@@ -6,11 +6,15 @@ import Tag from '@/database/tag.model';
 import { connectToDatabase } from '../mongoose';
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
 } from './shared.types';
 import { revalidatePath } from 'next/cache';
+import Interaction from '@/database/interaction.model';
+import { FilterQuery } from 'mongoose';
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
@@ -35,10 +39,39 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase();
-    const questions = await Question.find({})
+
+    const {filter, searchQuery} = params;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if(searchQuery) {
+      query.$or = [
+        {title: {$regex: new RegExp(searchQuery, 'i')}},
+        {content: {$regex: new RegExp(searchQuery, 'i')}},
+      ]
+    }
+
+    let sortOptions = {}
+
+    switch (filter) {
+      case 'newest':
+        sortOptions = {createdAt: -1}
+        break;
+      case 'frequent':
+        sortOptions = {views: -1}
+        break;
+      case 'unanswered':
+        query.answers = {$size: 0}
+        break;
+    
+      default:
+        break;
+    }
+
+    const questions = await Question.find(query)
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
     return { questions };
   } catch (error) {
@@ -135,3 +168,46 @@ export const downvoteQuestion = async (params: QuestionVoteParams) => {
     throw error;
   }
 };
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    await connectToDatabase();
+    const { questionId, title, content, path } = params;
+
+    const question = await Question.findById(questionId).populate('tags');
+
+    if(!question) throw new Error('Question not found')
+
+    question.title = title;
+    question.content = content;
+    await question.save();
+    
+    revalidatePath(path);
+  } catch (error) {}
+}
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    await connectToDatabase();
+    const { questionId, path } = params;
+
+    await Question.deleteOne({_id: questionId})
+    await Question.deleteMany({question: questionId})
+    await Interaction.deleteMany({question: questionId})
+    await Tag.updateMany({question: questionId}, { $pull: {questions: questionId}})
+
+    revalidatePath(path);
+  } catch (error) {}
+}
+
+export async function getHotQuestions() {
+  try {
+    await connectToDatabase();
+
+    const hotQuestions = await Question.find({})
+    .sort({views: -1, upvotes: -1})
+    .limit(5)
+
+    return hotQuestions;
+  } catch (error) {}
+}
