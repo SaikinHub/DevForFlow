@@ -15,6 +15,7 @@ import {
 import { revalidatePath } from 'next/cache';
 import Interaction from '@/database/interaction.model';
 import { FilterQuery } from 'mongoose';
+import { listenerCount } from 'stream';
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
@@ -40,40 +41,48 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase();
 
-    const {filter, searchQuery} = params;
+    const { page = 1, filter, pageSize = 2, searchQuery } = params;
+
+    const skipAmount = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = {};
 
-    if(searchQuery) {
+    if (searchQuery) {
       query.$or = [
-        {title: {$regex: new RegExp(searchQuery, 'i')}},
-        {content: {$regex: new RegExp(searchQuery, 'i')}},
-      ]
+        { title: { $regex: new RegExp(searchQuery, 'i') } },
+        { content: { $regex: new RegExp(searchQuery, 'i') } },
+      ];
     }
 
-    let sortOptions = {}
+    let sortOptions = {};
 
     switch (filter) {
       case 'newest':
-        sortOptions = {createdAt: -1}
+        sortOptions = { createdAt: -1 };
         break;
       case 'frequent':
-        sortOptions = {views: -1}
+        sortOptions = { views: -1 };
         break;
       case 'unanswered':
-        query.answers = {$size: 0}
+        query.answers = { $size: 0 };
         break;
-    
+
       default:
         break;
     }
+    const count = await Question.countDocuments(
+      { query },
+      { skip: page * pageSize }
+    );
 
     const questions = await Question.find(query)
+      .skip(skipAmount)
+      .limit(pageSize)
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
       .sort(sortOptions);
 
-    return { questions };
+    return { questions, isNext: !!count };
   } catch (error) {
     console.log(error);
     throw error;
@@ -176,12 +185,12 @@ export async function editQuestion(params: EditQuestionParams) {
 
     const question = await Question.findById(questionId).populate('tags');
 
-    if(!question) throw new Error('Question not found')
+    if (!question) throw new Error('Question not found');
 
     question.title = title;
     question.content = content;
     await question.save();
-    
+
     revalidatePath(path);
   } catch (error) {}
 }
@@ -191,10 +200,13 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
     await connectToDatabase();
     const { questionId, path } = params;
 
-    await Question.deleteOne({_id: questionId})
-    await Question.deleteMany({question: questionId})
-    await Interaction.deleteMany({question: questionId})
-    await Tag.updateMany({question: questionId}, { $pull: {questions: questionId}})
+    await Question.deleteOne({ _id: questionId });
+    await Question.deleteMany({ question: questionId });
+    await Interaction.deleteMany({ question: questionId });
+    await Tag.updateMany(
+      { question: questionId },
+      { $pull: { questions: questionId } }
+    );
 
     revalidatePath(path);
   } catch (error) {}
@@ -205,8 +217,8 @@ export async function getHotQuestions() {
     await connectToDatabase();
 
     const hotQuestions = await Question.find({})
-    .sort({views: -1, upvotes: -1})
-    .limit(5)
+      .sort({ views: -1, upvotes: -1 })
+      .limit(5);
 
     return hotQuestions;
   } catch (error) {}

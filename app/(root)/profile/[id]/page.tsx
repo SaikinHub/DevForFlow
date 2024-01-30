@@ -12,7 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-const Page = async ({ params }: any) => {
+const Page = async ({ params, searchParams }: any) => {
   const { userId: clerkId } = auth();
   const userInfo = await getUserInfo({ userId: params.id });
   const { name, username, picture, portfolioWebsite, location, joinedAt, bio } =
@@ -71,34 +71,34 @@ const Page = async ({ params }: any) => {
           </SignedIn>
         </div>
       </div>
-      <Stats 
+      <Stats
         totalQuestions={userInfo.totalQuestions!}
         totalAnswers={userInfo.totalAnswers!}
       />
       <div className="mt-10 flex gap-10">
-          <Tabs defaultValue="top-posts" className="flex-1">
-            <TabsList className="background-light800_dark400 min-h-[42px] p-1">
-              <TabsTrigger className="tab" value="top-posts">
-                Top Posts
-              </TabsTrigger>
-              <TabsTrigger className="tab" value="answers">
-                Answers
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="top-posts" className='flex w-full flex-col gap-6'>
-              <QuestionTab
-                searchParams={{fsd: ""}}
-                userId={userInfo.user.id}
-                clerkId={clerkId}
-              />
-            </TabsContent>
-            <TabsContent value="answers" className='flex w-full flex-col gap-6'>
-              <AnswersTab 
-                searchParams={{fsd: ""}}
-                userId={userInfo.user.id}
-                clerkId={clerkId}
-              />
-            </TabsContent>
+        <Tabs defaultValue="top-posts" className="flex-1">
+          <TabsList className="background-light800_dark400 min-h-[42px] p-1">
+            <TabsTrigger className="tab" value="top-posts">
+              Top Posts
+            </TabsTrigger>
+            <TabsTrigger className="tab" value="answers">
+              Answers
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="top-posts" className="flex w-full flex-col gap-6">
+            <QuestionTab
+              searchParams={searchParams}
+              userId={userInfo.user.id}
+              clerkId={clerkId}
+            />
+          </TabsContent>
+          <TabsContent value="answers" className="flex w-full flex-col gap-6">
+            <AnswersTab
+              searchParams={searchParams}
+              userId={userInfo.user.id}
+              clerkId={clerkId}
+            />
+          </TabsContent>
         </Tabs>
       </div>
     </>

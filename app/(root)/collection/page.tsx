@@ -6,11 +6,17 @@ import NoResult from '@/components/NoResult';
 import { auth } from '@clerk/nextjs';
 import { getSavedQuestions } from '@/lib/actions/user.action';
 import { SearchParamsProps } from '@/types';
+import Pagination from '@/components/shared/Pagination';
 
-export default async function Page({searchParams}: SearchParamsProps) {
+export default async function Page({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   if (!userId) return null;
-  const results = await getSavedQuestions({ clerkId: userId, searchQuery: searchParams.q, filter: searchParams.filter });
+  const results = await getSavedQuestions({
+    clerkId: userId,
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
+  });
 
   return (
     <>
@@ -55,6 +61,13 @@ export default async function Page({searchParams}: SearchParamsProps) {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={results ? results.isNext : false}
+          scroll={true}
+        />
       </div>
     </>
   );

@@ -14,38 +14,45 @@ import { FilterQuery } from 'mongoose';
 export async function getAllTags(params: GetAllTagsParams) {
   try {
     await connectToDatabase();
-    const { page = 1, pageSize = 20, filter, searchQuery } = params;
+    const { page = 1, pageSize = 1, filter, searchQuery } = params;
 
     const query: FilterQuery<typeof Tag> = {};
 
-    if(searchQuery) {
+    if (searchQuery) {
       query.$or = [
-        {name: {$regex: new RegExp(searchQuery, 'i')}},
-        {description: {$regex: new RegExp(searchQuery, 'i')}},
-      ]
+        { name: { $regex: new RegExp(searchQuery, 'i') } },
+        { description: { $regex: new RegExp(searchQuery, 'i') } },
+      ];
     }
 
-    let sortOptions = {}
+    let sortOptions = {};
 
     switch (filter) {
       case 'popular':
-        sortOptions = {questions: -1}          
+        sortOptions = { questions: -1 };
         break;
       case 'recent':
-        sortOptions = {createdAt: -1}          
+        sortOptions = { createdAt: -1 };
         break;
       case 'name':
-        sortOptions = {name: 1}          
+        sortOptions = { name: 1 };
         break;
       case 'old':
-        sortOptions = {createdAt: 1}          
-        break;    
+        sortOptions = { createdAt: 1 };
+        break;
       default:
         break;
     }
 
-    const tags = await Tag.find(query).sort(sortOptions);
-    return { tags };
+    const skipAmount = (page - 1) * pageSize;
+
+    const count = await Tag.countDocuments(query, { skip: page * pageSize });
+
+    const tags = await Tag.find(query)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort(sortOptions);
+    return { tags, isNext: !!count };
   } catch (error) {
     console.log(error);
     throw error;
@@ -55,9 +62,11 @@ export async function getAllTags(params: GetAllTagsParams) {
 export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
   try {
     await connectToDatabase();
-    const { tagId, page = 1, pageSize = 10, filter, searchQuery } = params;
+    const { tagId, page = 1, pageSize = 1, searchQuery } = params;
 
     const tagFilter: FilterQuery<ITag> = { _id: tagId };
+
+    const skipAmount = (page - 1) * pageSize;
 
     const tag = await Tag.findOne(tagFilter).populate({
       path: 'questions',
@@ -66,6 +75,8 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
         ? { title: { $regex: searchQuery, $options: 'i' } }
         : {},
       options: {
+        skip: skipAmount,
+        limit: pageSize + 1,
         sort: { createdAt: -1 },
       },
       populate: [
@@ -81,7 +92,10 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
     if (!tag) {
       throw new Error('Tag not found');
     }
-    return { tagTitle: tag.name, questions: tag.questions };
+
+    const isNext = tag.questions.length > pageSize;
+
+    return { tagTitle: tag.name, questions: tag.questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -107,17 +121,16 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   }
 }
 
-
 export async function getTopPopularTags() {
   try {
     await connectToDatabase();
 
     const popularTags = await Tag.aggregate([
-      {$project: {name: 1, numberOfQuestions: {$size: "$questions"}}},
-      {$sort: {numberOfQuestions: -1}},
-      {$limit: 5}
-    ])
-    
+      { $project: { name: 1, numberOfQuestions: { $size: '$questions' } } },
+      { $sort: { numberOfQuestions: -1 } },
+      { $limit: 5 },
+    ]);
+
     return popularTags;
   } catch (error) {}
 }

@@ -32,39 +32,49 @@ export const createAnswer = async (params: CreateAnswerParams) => {
 };
 
 export const getAnswers = async (params: GetAnswersParams) => {
-  const { questionId, sortBy } = params;
+  const { questionId, sortBy, page = 1, pageSize = 1 } = params;
   try {
     await connectToDatabase();
 
-    let sortOptions = {}
+    const skipAmount = (page - 1) * pageSize;
+
+    let sortOptions = {};
 
     switch (sortBy) {
       case 'highestUpvotes':
-        sortOptions = {upvotes: -1}
+        sortOptions = { upvotes: -1 };
         break;
       case 'lowestUpvotes':
-        sortOptions = {upvotes: 1}
+        sortOptions = { upvotes: 1 };
         break;
-      case 'recent':  
-        sortOptions = {createdAt: -1}
+      case 'recent':
+        sortOptions = { createdAt: -1 };
         break;
       case 'old':
-        sortOptions = {createdAt: 1}
+        sortOptions = { createdAt: 1 };
         break;
-    
+
       default:
         break;
     }
 
-
     const answers = await Answer.find({ question: questionId })
+      .skip(skipAmount)
+      .limit(pageSize)
       .populate({
         path: 'author',
         model: User,
         select: '_id clerkId name username picture upvotes downvotes',
       })
       .sort(sortOptions);
-    return { answers };
+
+    const totalAnswers = await Answer.countDocuments({
+      questions: questionId,
+    });
+
+    const isNextAnswers = totalAnswers > skipAmount + answers.length;
+
+    return { answers, isNextAnswers };
   } catch (error) {
     console.log(error);
     throw error;
@@ -146,15 +156,18 @@ export const deleteAnswer = async (params: DeleteAnswerParams) => {
     await connectToDatabase();
     const { answerId, path } = params;
 
-    const answer = await Answer.findById(answerId)
+    const answer = await Answer.findById(answerId);
 
-    if(!answer) {
-      throw new Error('Answer not found')
+    if (!answer) {
+      throw new Error('Answer not found');
     }
 
-    await answer.deleteOne({_id: answerId})
-    await Question.updateMany({_id: answer.question}, { $pull: {answers: answerId}})
-    await Interaction.deleteMany({answer: answerId})
+    await answer.deleteOne({ _id: answerId });
+    await Question.updateMany(
+      { _id: answer.question },
+      { $pull: { answers: answerId } }
+    );
+    await Interaction.deleteMany({ answer: answerId });
 
     revalidatePath(path);
   } catch (error) {

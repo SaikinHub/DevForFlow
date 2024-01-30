@@ -25,31 +25,30 @@ const LocalSearchbar = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const query = searchParams.get('q')
-  const [search, setSearch] = useState(query || '')
-  
+  const query = searchParams.get('q');
+  const [search, setSearch] = useState(query || '');
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if(search) {
+      if (search) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
           key: 'q',
-          value: search
-        })
-        router.push(newUrl, {scroll: false})
+          value: search,
+        });
+        router.push(newUrl, { scroll: false });
       } else {
-        if(pathname === route) {
-          
+        if (pathname === route) {
           const newUrl = removeKeysFromQuery({
             params: searchParams.toString(),
-            keysToRemove: ['q']
-          })
-          router.push(newUrl, {scroll: false})
+            keysToRemove: ['q'],
+          });
+          router.push(newUrl, { scroll: false });
         }
       }
-    }, 300)
-    return () => clearTimeout(delayDebounceFn)
-  }, [search, route, pathname, router, searchParams, query])
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, route, pathname, router, searchParams, query]);
 
   return (
     <div
@@ -69,7 +68,7 @@ const LocalSearchbar = ({
         placeholder={placeholder}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="paragraph-regular placeholder no-focus border-none bg-transparent shadow-none outline-transparent"
+        className="paragraph-regular placeholder no-focus border-none bg-transparent shadow-none outline-transparent text-dark400_light700"
       />
     </div>
   );

@@ -36,12 +36,12 @@ const QuestionCard = ({
   views,
   answers,
   createdAt,
-  clerkId
+  clerkId,
 }: QuestionsProps) => {
   const showActionButtons = clerkId && clerkId === author.clerkId;
   return (
     <div className="card-wrapper flex flex-col items-start justify-between gap-5 rounded-[10px] p-9 sm:px-11">
-      <div className='flex justify-between w-full'>
+      <div className="flex justify-between w-full">
         <div>
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {getTimeStamp(createdAt)}
@@ -55,10 +55,7 @@ const QuestionCard = ({
 
         <SignedIn>
           {showActionButtons && (
-            <EditDeleteAction
-              type="Question"
-              itemId={JSON.stringify(_id)}
-            />
+            <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
           )}
         </SignedIn>
       </div>
@@ -73,7 +70,7 @@ const QuestionCard = ({
         <Metric
           imgUrl={author.picture}
           alt="user"
-          value={author.username}
+          value={author?.username}
           title={` - asked ${getTimeStamp(createdAt)}`}
           href={`/profile/${author._id}`}
           isAuthor
