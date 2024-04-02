@@ -30,7 +30,7 @@ const UserCard = async ({
           width={100}
           height={100}
           alt="user profile picture"
-          className=" rounded-full"
+          className="rounded-full w-[100px] h-[100px] object-cover"
         />
         <div className="mt-4 text-center">
           <p className="h3-bold text-dark200_light900 line-clamp-1">{name}</p>
