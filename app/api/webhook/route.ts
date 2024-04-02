@@ -63,23 +63,22 @@ export async function POST(req: Request) {
       email: email_addresses[0].email_address,
       picture: image_url,
     });
-    return NextResponse.json({ message: 'Ok', user: mongoUser });
+
+    return NextResponse.json({ message: 'Created', user: mongoUser });
   }
 
   if (eventType === 'user.updated') {
-    const { id, email_addresses, image_url, username, first_name, last_name } =
-      evt.data;
+    const { id, email_addresses, image_url } = evt.data;
     const mongoUser = await updateUser({
       clerkId: id,
       updateData: {
-        name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
-        username: username!,
         email: email_addresses[0].email_address,
         picture: image_url,
       },
       path: `/profile/${id}`,
     });
-    return NextResponse.json({ message: 'Ok', user: mongoUser });
+
+    return NextResponse.json({ message: 'Updated', user: mongoUser });
   }
 
   if (eventType === 'user.deleted') {
@@ -88,7 +87,7 @@ export async function POST(req: Request) {
     const deltedUser = await deleteUser({
       clerkId: id!,
     });
-    return NextResponse.json({ message: 'Ok', user: deltedUser });
+    return NextResponse.json({ message: 'Deleted', user: deltedUser });
   }
 
   return new Response('', { status: 201 });
