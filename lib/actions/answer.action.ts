@@ -32,7 +32,7 @@ export const createAnswer = async (params: CreateAnswerParams) => {
 };
 
 export const getAnswers = async (params: GetAnswersParams) => {
-  const { questionId, sortBy, page = 1, pageSize = 1 } = params;
+  const { questionId, sortBy, page = 1, pageSize = 2 } = params;
   try {
     await connectToDatabase();
 
@@ -69,12 +69,12 @@ export const getAnswers = async (params: GetAnswersParams) => {
       .sort(sortOptions);
 
     const totalAnswers = await Answer.countDocuments({
-      questions: questionId,
+      question: questionId,
     });
 
     const isNextAnswers = totalAnswers > skipAmount + answers.length;
 
-    return { answers, isNextAnswers };
+    return { answers, isNextAnswers: isNextAnswers };
   } catch (error) {
     console.log(error);
     throw error;

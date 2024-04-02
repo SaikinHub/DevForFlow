@@ -191,7 +191,7 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
 export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     await connectToDatabase();
-    const { clerkId, page = 1, pageSize = 1, searchQuery, filter } = params;
+    const { clerkId, page = 1, pageSize = 4, searchQuery, filter } = params;
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -258,7 +258,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 export async function getUserQuestions(params: GetUserStatsParams) {
   try {
     await connectToDatabase();
-    const { userId, page = 1, pageSize = 1 } = params;
+    const { userId, page = 1, pageSize = 3 } = params;
 
     const skipAmount = (page - 1) * pageSize;
 
@@ -282,7 +282,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     await connectToDatabase();
-    const { userId, page = 1, pageSize = 1 } = params;
+    const { userId, page = 1, pageSize = 3 } = params;
 
     const skipAmount = (page - 1) * pageSize;
 
