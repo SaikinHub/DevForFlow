@@ -7,6 +7,7 @@ import Votes from '@/components/shared/Votes';
 import { getQuestionById } from '@/lib/actions/question.action';
 import { getUserById } from '@/lib/actions/user.action';
 import { formatNumberWithSuffix, getTimeStamp } from '@/lib/utils';
+import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -17,6 +18,7 @@ interface Props {
 
 const page = async ({ params, searchParams }: Props) => {
   const result = await getQuestionById({ questionId: params.id });
+  const { userId } = auth();
 
   const {
     _id,
@@ -32,8 +34,8 @@ const page = async ({ params, searchParams }: Props) => {
   } = result.question;
   let mongoUser;
 
-  if (result) {
-    mongoUser = await getUserById({ userId: result.question.author.clerkId });
+  if (userId) {
+    mongoUser = await getUserById({ userId: userId });
   }
   return (
     <>
@@ -58,12 +60,12 @@ const page = async ({ params, searchParams }: Props) => {
             <Votes
               type="question"
               itemId={JSON.stringify(_id)}
-              userId={JSON.stringify(mongoUser._id)}
+              userId={JSON.stringify(author._id)}
               hasUpvoted={upvotes.includes(mongoUser._id)}
               hasDownvoted={downvotes.includes(mongoUser._id)}
               upvotes={upvotes.length}
               downvotes={downvotes.length}
-              hasSaved={mongoUser?.saved.includes(_id)}
+              hasSaved={author?.saved?.includes(mongoUser._id)}
             />
           </div>
         </div>
