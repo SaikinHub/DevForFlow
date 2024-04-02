@@ -23,7 +23,6 @@ import { createQuestion, editQuestion } from '@/lib/actions/question.action';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeProvider';
 
-
 interface Props {
   mongoUserId: string;
   type?: string;
@@ -36,9 +35,10 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const parsedQuestionDetails = questionDetails && JSON.parse(questionDetails || '')
+  const parsedQuestionDetails =
+    questionDetails && JSON.parse(questionDetails || '');
 
-  const groupedTags = parsedQuestionDetails?.tags.map((tag: any) => tag.name)
+  const groupedTags = parsedQuestionDetails?.tags.map((tag: any) => tag.name);
 
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
@@ -53,15 +53,15 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
     try {
-      if(type === 'Edit') {
+      if (type === 'Edit') {
         await editQuestion({
           questionId: parsedQuestionDetails._id,
           title: values.title,
           content: values.explanation,
-          path: pathname
-        })
+          path: pathname,
+        });
         router.push(`/question/${parsedQuestionDetails._id}`);
-      } else { 
+      } else {
         await createQuestion({
           title: values.title,
           content: values.explanation,
@@ -215,17 +215,25 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
                       {field.value.map((tag: any) => (
                         <Badge
                           key={tag}
-                          onClick={() => {type !== 'Edit' ? handleTagRemove(tag, field): () => {}}}
-                          className={`subtle-medium background-light800_dark300 text-light400_light500 flex ${type !== 'Edit' ? 'cursor-pointer' : 'cursor-not-allowed'} items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize`}
+                          onClick={() => {
+                            type !== 'Edit' && handleTagRemove(tag, field);
+                          }}
+                          className={`subtle-medium background-light800_dark300 text-light400_light500 flex ${
+                            type !== 'Edit'
+                              ? 'cursor-pointer'
+                              : 'cursor-not-allowed'
+                          } items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize`}
                         >
                           {tag}
-                          {type !== 'Edit' && (<Image
-                            src="/assets/icons/close.svg"
-                            alt="Close icon"
-                            width={12}
-                            height={12}
-                            className="cursor-pointer object-contain invert-0 dark:invert"
-                          />)}
+                          {type !== 'Edit' && (
+                            <Image
+                              src="/assets/icons/close.svg"
+                              alt="Close icon"
+                              width={12}
+                              height={12}
+                              className="cursor-pointer object-contain invert-0 dark:invert"
+                            />
+                          )}
                         </Badge>
                       ))}
                     </div>
