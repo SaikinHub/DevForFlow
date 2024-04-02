@@ -3,7 +3,7 @@ import React from 'react';
 import RenderTag from '../shared/RenderTag';
 import Metric from '../shared/Metric';
 import { formatNumberWithSuffix, getTimeStamp } from '@/lib/utils';
-import { SignedIn } from '@clerk/nextjs';
+import { SignedIn, auth } from '@clerk/nextjs';
 import EditDeleteAction from '../shared/EditDeleteAction';
 
 interface QuestionsProps {
@@ -36,9 +36,10 @@ const QuestionCard = ({
   views,
   answers,
   createdAt,
-  clerkId,
 }: QuestionsProps) => {
-  const showActionButtons = clerkId && clerkId === author.clerkId;
+  const { userId } = auth();
+  const showActionButtons = author.clerkId && author.clerkId === userId;
+
   return (
     <div className="card-wrapper flex flex-col items-start justify-between gap-5 rounded-[10px] p-9 sm:px-11">
       <div className="flex justify-between w-full">
