@@ -13,7 +13,8 @@ import Link from 'next/link';
 import React from 'react';
 
 const Page = async ({ params, searchParams }: any) => {
-  const { userId: clerkId } = auth();
+  const { userId } = auth();
+
   const userInfo = await getUserInfo({ userId: params.id });
   const { name, username, picture, portfolioWebsite, location, joinedAt, bio } =
     userInfo.user;
@@ -26,7 +27,7 @@ const Page = async ({ params, searchParams }: any) => {
             width={140}
             height={140}
             alt="profile picture"
-            className="rounded-full object-cover"
+            className="rounded-full object-cover w-[150px] h-[150px]"
           />
           <div className="mt-3">
             <h2 className="h2-bold text-dark100_light900">{name}</h2>
@@ -61,7 +62,7 @@ const Page = async ({ params, searchParams }: any) => {
         </div>
         <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
           <SignedIn>
-            {clerkId === userInfo.user.clerkId && (
+            {userId === userInfo.user.clerkId && (
               <Link href="/profile/edit">
                 <Button className="paragraph-medium btn-secondary text-dark300_light900 min-h-[46px] min-w-[175px] px-4 py-3">
                   Edit Profile
@@ -89,14 +90,14 @@ const Page = async ({ params, searchParams }: any) => {
             <QuestionTab
               searchParams={searchParams}
               userId={userInfo.user.id}
-              clerkId={clerkId}
+              clerkId={userId}
             />
           </TabsContent>
           <TabsContent value="answers" className="flex w-full flex-col gap-6">
             <AnswersTab
               searchParams={searchParams}
               userId={userInfo.user.id}
-              clerkId={clerkId}
+              clerkId={userId}
             />
           </TabsContent>
         </Tabs>
