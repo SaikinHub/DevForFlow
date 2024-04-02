@@ -220,10 +220,9 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
     const { questionId, path } = params;
 
     await Question.deleteOne({ _id: questionId });
-    await Question.deleteMany({ question: questionId });
     await Interaction.deleteMany({ question: questionId });
     await Tag.updateMany(
-      { question: questionId },
+      { questions: questionId },
       { $pull: { questions: questionId } }
     );
 
