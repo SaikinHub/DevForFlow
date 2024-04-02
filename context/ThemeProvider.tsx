@@ -21,9 +21,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     ) {
       document.documentElement.classList.remove('light');
       document.documentElement.classList.add('dark');
-    } else {
+    } else if (mode === 'light') {
       document.documentElement.classList.remove('dark');
       document.documentElement.classList.add('light');
+    } else if (
+      !('theme' in localStorage) &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
     }
   };
 
