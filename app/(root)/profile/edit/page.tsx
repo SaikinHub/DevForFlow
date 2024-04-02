@@ -1,12 +1,13 @@
 import Profile from '@/components/forms/Profile';
 import { getUserById } from '@/lib/actions/user.action';
 import { auth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
 import React from 'react';
 
 const page = async () => {
   const { userId } = auth();
 
-  if (!userId) return null;
+  if (!userId) redirect('/sign-in');
 
   const mongoUser = await getUserById({ userId: userId });
   return (
