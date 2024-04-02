@@ -69,7 +69,7 @@ const GlobalResult = ({ setSearch, setIsOpen }: any) => {
         ) : (
           <div className="flex flex-col gap-2">
             {result.length > 0 ? (
-              result.map((item, index) => (
+              result.map((item: any, index) => (
                 <Link
                   href={renderLink(item.type, item.id)}
                   onClick={() => {
