@@ -13,9 +13,10 @@ import Link from 'next/link';
 
 interface Props {
   params: { id: string };
+  searchParams: { page: number; filter: string };
 }
 
-const page = async ({ params }: Props) => {
+const page = async ({ params, searchParams }: Props) => {
   const result = await getQuestionById({ questionId: params.id });
 
   const {
