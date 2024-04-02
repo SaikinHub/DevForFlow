@@ -10,15 +10,12 @@ import { formatNumberWithSuffix, getTimeStamp } from '@/lib/utils';
 import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import React from 'react';
 
 interface Props {
   params: { id: string };
 }
 
-const page = async ({ params, searchParams }: Props) => {
-
+const page = async ({ params }: Props) => {
   const result = await getQuestionById({ questionId: params.id });
 
   const {
