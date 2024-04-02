@@ -7,7 +7,6 @@ import Votes from '@/components/shared/Votes';
 import { getQuestionById } from '@/lib/actions/question.action';
 import { getUserById } from '@/lib/actions/user.action';
 import { formatNumberWithSuffix, getTimeStamp } from '@/lib/utils';
-import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -31,11 +30,10 @@ const page = async ({ params, searchParams }: Props) => {
     upvotes,
     downvotes,
   } = result.question;
-  const { userId: clerkId } = auth();
   let mongoUser;
 
-  if (clerkId) {
-    mongoUser = await getUserById({ userId: clerkId });
+  if (result) {
+    mongoUser = await getUserById({ userId: result.question.author.clerkId });
   }
   return (
     <>
