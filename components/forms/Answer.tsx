@@ -25,7 +25,7 @@ interface Props {
   authorId: string;
 }
 
-const Answer = ({ question, questionId, authorId }: Props) => {
+const Answer = ({ questionId, authorId }: Props) => {
   const pathname = usePathname();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mode } = useTheme();
