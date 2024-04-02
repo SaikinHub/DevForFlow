@@ -84,7 +84,7 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
         {
           path: 'author',
           model: User,
-          select: '_id name username picture',
+          select: '_id name username clerkId picture',
         },
       ],
     });
