@@ -1,14 +1,14 @@
-"use client"
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+'use client';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from '@/components/ui/form';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '../ui/button';
@@ -19,48 +19,49 @@ import { usePathname, useRouter } from 'next/navigation';
 import { updateUser } from '@/lib/actions/user.action';
 
 interface Props {
-    clerkId: string, 
-    user: string, 
+  clerkId: string;
+  user: string;
 }
 
-const Profile = ({clerkId, user}: Props) => {
-    const parsedUser = JSON.parse(user)
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const router = useRouter()
-    const pathname = usePathname()
-    
-    const form = useForm<z.infer<typeof ProfileSchema>>({
-        resolver: zodResolver(ProfileSchema),
-        defaultValues: {
-          name: parsedUser.name || '',
-          username: parsedUser.username || '',
-          portfolioWebsite: parsedUser.portfolioWebsite || '',
-          location: parsedUser.location || '',
-          bio: parsedUser.bio || '',
-        },
-      });
+const Profile = ({ clerkId, user }: Props) => {
+  const parsedUser = JSON.parse(user);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  console.log(user);
 
-      async function onSubmit(values: z.infer<typeof ProfileSchema>) {
-        setIsSubmitting(true);
-        try {
-            await updateUser({
-                clerkId,
-                updateData: {
-                    name: values.name,
-                    username: values.username,
-                    portfolioWebsite: values.portfolioWebsite,
-                    location: values.location,
-                    bio: values.bio,
-                },
-                path: pathname
-            });
-            router.back();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setIsSubmitting(false);
-        }
-      }
+  const form = useForm<z.infer<typeof ProfileSchema>>({
+    resolver: zodResolver(ProfileSchema),
+    defaultValues: {
+      name: parsedUser?.name || '',
+      username: parsedUser.username || '',
+      portfolioWebsite: parsedUser.portfolioWebsite || '',
+      location: parsedUser.location || '',
+      bio: parsedUser.bio || '',
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof ProfileSchema>) {
+    setIsSubmitting(true);
+    try {
+      await updateUser({
+        clerkId,
+        updateData: {
+          name: values.name,
+          username: values.username,
+          portfolioWebsite: values.portfolioWebsite,
+          location: values.location,
+          bio: values.bio,
+        },
+        path: pathname,
+      });
+      router.back();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
   return (
     <Form {...form}>
       <form
@@ -77,16 +78,16 @@ const Profile = ({clerkId, user}: Props) => {
               </FormLabel>
               <FormControl>
                 <Input
-                    placeholder='Your name'
-                    className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                    {...field}
+                  placeholder="Your name"
+                  className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                  {...field}
                 />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="username"
@@ -97,16 +98,16 @@ const Profile = ({clerkId, user}: Props) => {
               </FormLabel>
               <FormControl>
                 <Input
-                    placeholder='Your username'
-                    className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                    {...field}
+                  placeholder="Your username"
+                  className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                  {...field}
                 />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="portfolioWebsite"
@@ -117,17 +118,17 @@ const Profile = ({clerkId, user}: Props) => {
               </FormLabel>
               <FormControl>
                 <Input
-                    type='url'
-                    placeholder='Your portfolio URL'
-                    className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                    {...field}
+                  type="url"
+                  placeholder="Your portfolio URL"
+                  className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                  {...field}
                 />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="location"
@@ -138,16 +139,16 @@ const Profile = ({clerkId, user}: Props) => {
               </FormLabel>
               <FormControl>
                 <Input
-                    placeholder='Where are you from'
-                    className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                    {...field}
+                  placeholder="Where are you from"
+                  className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                  {...field}
                 />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="bio"
@@ -158,28 +159,28 @@ const Profile = ({clerkId, user}: Props) => {
               </FormLabel>
               <FormControl>
                 <Textarea
-                    placeholder='What special about you ?'
-                    className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                    {...field}
+                  placeholder="What special about you ?"
+                  className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                  {...field}
                 />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <div className="mt-7 flex justify-end">
-            <Button
+          <Button
             type="submit"
             disabled={isSubmitting}
             className="primary-gradient w-fit !text-light-900"
-            >
-                {isSubmitting ? 'Saving...' : 'Save'}
-            </Button>
+          >
+            {isSubmitting ? 'Saving...' : 'Save'}
+          </Button>
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

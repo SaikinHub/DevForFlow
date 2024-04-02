@@ -15,7 +15,6 @@ import {
 import { revalidatePath } from 'next/cache';
 import Interaction from '@/database/interaction.model';
 import { FilterQuery } from 'mongoose';
-import { listenerCount } from 'stream';
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
@@ -76,11 +75,11 @@ export async function getQuestions(params: GetQuestionsParams) {
     );
 
     const questions = await Question.find(query)
+      .sort(sortOptions)
       .skip(skipAmount)
       .limit(pageSize)
       .populate({ path: 'tags', model: Tag })
-      .populate({ path: 'author', model: User })
-      .sort(sortOptions);
+      .populate({ path: 'author', model: User });
 
     return { questions, isNext: !!count };
   } catch (error) {
@@ -115,8 +114,19 @@ export async function createQuestion(params: CreateQuestionParams) {
     await Question.findByIdAndUpdate(question._id, {
       $push: { tags: { $each: tagDocuments } },
     });
+
+    await Interaction.create({
+      user: author,
+      action: 'ask_question',
+      question: question._id,
+      tags: tagDocuments,
+    });
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
     revalidatePath(path);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export const upvoteQuestion = async (params: QuestionVoteParams) => {
@@ -142,6 +152,15 @@ export const upvoteQuestion = async (params: QuestionVoteParams) => {
     if (!question) {
       throw new Error('Question not found');
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasUpvoted ? -1 : 1 },
+    });
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasUpvoted ? -10 : 10 },
+    });
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
