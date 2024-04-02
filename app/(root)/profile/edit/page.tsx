@@ -1,17 +1,14 @@
 import Profile from '@/components/forms/Profile';
-import { getQuestionById } from '@/lib/actions/question.action';
 import { getUserById } from '@/lib/actions/user.action';
-import { ParamsProps } from '@/types';
 import { auth } from '@clerk/nextjs';
 import React from 'react';
 
-const page = async ({ params }: ParamsProps) => {
+const page = async () => {
   const { userId } = auth();
 
   if (!userId) return null;
 
   const mongoUser = await getUserById({ userId: userId });
-  const result = await getQuestionById({ questionId: params.id });
   return (
     <div>
       <h1 className="h1-bold text-dark100_light900">Edit profile</h1>
