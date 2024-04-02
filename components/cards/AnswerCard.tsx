@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import React from 'react';
-import RenderTag from '../shared/RenderTag';
 import Metric from '../shared/Metric';
 import { formatNumberWithSuffix, getTimeStamp } from '@/lib/utils';
 import { SignedIn } from '@clerk/nextjs';
@@ -38,7 +37,7 @@ const AnswerCard = ({
       href={`/question/${question._id}/#${_id}`}
       className="card-wrapper rounded-[10px] px-11 py-9"
     >
-      <div className="flex flex-col items-start justify-between gap-5 sm: flex-row">
+      <div className="flex flex-col items-start justify-between gap-5 sm:flex-row">
         <div className="flex justify-between w-full">
           <div>
             <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
