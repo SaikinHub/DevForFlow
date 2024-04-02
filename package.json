@@ -50,6 +50,7 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
-    "@types/prismjs": "^1.26.3"
+    "@types/prismjs": "^1.26.3",
+    "encoding": "^0.1.13"
   }
 }
