@@ -21,7 +21,7 @@ import Answer from '@/database/answer.model';
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     await connectToDatabase();
-    const { searchQuery, page = 1, pageSize = 1, filter } = params;
+    const { searchQuery, page = 1, pageSize = 5, filter } = params;
 
     const query: FilterQuery<typeof User> = {};
 

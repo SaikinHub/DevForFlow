@@ -14,7 +14,7 @@ import { FilterQuery } from 'mongoose';
 export async function getAllTags(params: GetAllTagsParams) {
   try {
     await connectToDatabase();
-    const { page = 1, pageSize = 1, filter, searchQuery } = params;
+    const { page = 1, pageSize = 6, filter, searchQuery } = params;
 
     const query: FilterQuery<typeof Tag> = {};
 

@@ -40,7 +40,7 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase();
 
-    const { page = 1, filter, pageSize = 2, searchQuery } = params;
+    const { page = 1, filter, pageSize = 3, searchQuery } = params;
 
     const skipAmount = (page - 1) * pageSize;
 
