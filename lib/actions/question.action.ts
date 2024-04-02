@@ -15,6 +15,7 @@ import {
 import { revalidatePath } from 'next/cache';
 import Interaction from '@/database/interaction.model';
 import { FilterQuery } from 'mongoose';
+import Answer from '@/database/answer.model';
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
@@ -220,6 +221,7 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
     const { questionId, path } = params;
 
     await Question.deleteOne({ _id: questionId });
+    await Answer.deleteMany({ question: questionId });
     await Interaction.deleteMany({ question: questionId });
     await Tag.updateMany(
       { questions: questionId },
