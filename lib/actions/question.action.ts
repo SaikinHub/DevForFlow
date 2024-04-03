@@ -191,6 +191,15 @@ export const downvoteQuestion = async (params: QuestionVoteParams) => {
     if (!question) {
       throw new Error('Question not found');
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasDownvoted ? -2 : 2 },
+    });
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasDownvoted ? -10 : 10 },
+    });
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
