@@ -1,20 +1,20 @@
-import { BADGE_CRITERIA } from "@/constants";
+import { BADGE_CRITERIA } from '@/constants/constants';
 
 export interface Questions {
-    _id: string,
-    title: string,
+  _id: string;
+  title: string;
 }
 
 export interface Filters {
-  _id: number,
-  name: string,
-  highlight?: boolean
+  _id: number;
+  name: string;
+  highlight?: boolean;
 }
 
 export interface PopularTags {
-  _id: string,
-  name: string,
-  totalQuestions: number
+  _id: string;
+  name: string;
+  totalQuestions: number;
 }
 
 export interface Themes {
