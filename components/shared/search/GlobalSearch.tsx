@@ -75,8 +75,11 @@ const GlobalSearch = () => {
           onFocus={() => search && setIsOpen(true)}
           onChange={(e) => {
             setSearch(e.target.value);
-            if (search) setIsOpen(true);
-            if (e.target.value === '' && isOpen) setIsOpen(false);
+            if (e.target.value === '' && isOpen) {
+              setIsOpen(false);
+            } else {
+              setIsOpen(true);
+            }
           }}
           value={search}
           className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none text-dark400_light700"
