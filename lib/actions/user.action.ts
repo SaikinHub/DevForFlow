@@ -19,7 +19,6 @@ import Tag from '@/database/tag.model';
 import Answer from '@/database/answer.model';
 import { BadgeCriteriaType } from '@/types';
 import { assignBadges } from '../utils';
-import { BADGE_CRITERIA } from '@/constants/constants';
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
