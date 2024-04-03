@@ -73,7 +73,6 @@ const GlobalResult = ({ setSearch, setIsOpen }: any) => {
                 <Link
                   href={renderLink(item.type, item.id)}
                   onClick={() => {
-                    setSearch('');
                     setIsOpen(false);
                   }}
                   key={item.type + item.id + index}
