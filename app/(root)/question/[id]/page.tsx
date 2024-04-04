@@ -43,14 +43,14 @@ const page = async ({ params, searchParams }: Props) => {
         <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
           <Link
             href={`/profile/${author.clerkId}`}
-            className="flex items-center justify-start gap-1"
+            className="flex items-center justify-start gap-2"
           >
             <Image
               src={author.picture}
-              width={22}
-              height={22}
+              width={35}
+              height={35}
               alt="profile"
-              className="rounded-full"
+              className="object-cover rounded-full w-[35px] h-[35px]"
             />
             <p className="paragraph-semibold text-dark300_light700">
               {author.name}
@@ -60,9 +60,9 @@ const page = async ({ params, searchParams }: Props) => {
             <Votes
               type="question"
               itemId={JSON.stringify(_id)}
-              userId={JSON.stringify(mongoUser._id)}
-              hasUpvoted={upvotes.includes(mongoUser._id)}
-              hasDownvoted={downvotes.includes(mongoUser._id)}
+              userId={JSON.stringify(mongoUser?._id)}
+              hasUpvoted={upvotes.includes(mongoUser?._id)}
+              hasDownvoted={downvotes.includes(mongoUser?._id)}
               upvotes={upvotes.length}
               downvotes={downvotes.length}
               hasSaved={mongoUser?.saved?.includes(_id)}
@@ -77,8 +77,7 @@ const page = async ({ params, searchParams }: Props) => {
         <Metric
           imgUrl="/assets/icons/clock.svg"
           alt="clock icon"
-          value={` asked ${getTimeStamp(createdAt)}`}
-          title=" Asked"
+          value={` Asked ${getTimeStamp(createdAt)}`}
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
@@ -109,14 +108,14 @@ const page = async ({ params, searchParams }: Props) => {
         ))}
       </div>
       <AllAnswers
-        userId={mongoUser._id}
+        userId={mongoUser?._id}
         questionId={_id}
         totalAnswers={answers.length}
         page={searchParams?.page}
         filter={searchParams?.filter}
       />
       <Answer
-        authorId={JSON.stringify(mongoUser._id)}
+        authorId={JSON.stringify(mongoUser?._id)}
         question={content}
         questionId={JSON.stringify(_id)}
       />

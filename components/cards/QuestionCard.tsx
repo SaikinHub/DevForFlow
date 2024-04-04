@@ -71,33 +71,35 @@ const QuestionCard = ({
         <Metric
           imgUrl={author.picture}
           alt="user"
-          value={author?.username}
+          value={author?.name ? author.name : `@${author?.username}`}
           title={` - asked ${getTimeStamp(createdAt)}`}
           href={`/profile/${author.clerkId}`}
           isAuthor
           textStyles="body-medium text-dark400_light800"
         />
-        <Metric
-          imgUrl="/assets/icons/like.svg"
-          alt="Upvotes"
-          value={formatNumberWithSuffix(upvotes.length)}
-          title={upvotes.length > 1 ? ' Votes' : 'Vote'}
-          textStyles="small-medium text-dark400_light800"
-        />
-        <Metric
-          imgUrl="/assets/icons/message.svg"
-          alt="message"
-          value={formatNumberWithSuffix(answers.length)}
-          title={answers.length > 1 ? ' Answers' : 'Answer'}
-          textStyles="small-medium text-dark400_light800"
-        />
-        <Metric
-          imgUrl="/assets/icons/eye.svg"
-          alt="eye"
-          value={formatNumberWithSuffix(views)}
-          title={views > 1 ? ' Views' : 'View'}
-          textStyles="small-medium text-dark400_light800"
-        />
+        <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">
+          <Metric
+            imgUrl="/assets/icons/like.svg"
+            alt="Upvotes"
+            value={formatNumberWithSuffix(upvotes.length)}
+            title={upvotes.length > 1 ? ' Votes' : 'Vote'}
+            textStyles="small-medium text-dark400_light800"
+          />
+          <Metric
+            imgUrl="/assets/icons/message.svg"
+            alt="message"
+            value={formatNumberWithSuffix(answers.length)}
+            title={answers.length > 1 ? ' Answers' : 'Answer'}
+            textStyles="small-medium text-dark400_light800"
+          />
+          <Metric
+            imgUrl="/assets/icons/eye.svg"
+            alt="eye"
+            value={formatNumberWithSuffix(views)}
+            title={views > 1 ? ' Views' : 'View'}
+            textStyles="small-medium text-dark400_light800"
+          />
+        </div>
       </div>
     </div>
   );

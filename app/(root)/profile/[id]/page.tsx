@@ -35,7 +35,7 @@ const Page = async ({ params, searchParams }: any) => {
               @{username}
             </p>
 
-            <div className="mt-5 flex flex-wrap items-center justify-start">
+            <div className="mt-5 flex flex-wrap items-start justify-start gap-3">
               {portfolioWebsite && (
                 <ProfileLink
                   imgUrl="/assets/icons/link.svg"
@@ -43,19 +43,19 @@ const Page = async ({ params, searchParams }: any) => {
                   title={portfolioWebsite}
                 />
               )}
+              <ProfileLink
+                imgUrl="/assets/icons/calendar.svg"
+                title={getJoinedDate(joinedAt)}
+              />
               {location && (
                 <ProfileLink
                   imgUrl="/assets/icons/location.svg"
                   title={location}
                 />
               )}
-              <ProfileLink
-                imgUrl="/assets/icons/calendar.svg"
-                title={getJoinedDate(joinedAt)}
-              />
             </div>
 
-            <p className="paragraph-regular text-dark400_light800 mt-8">
+            <p className="paragraph-regular text-dark400_light800 mt-4">
               {bio ?? 'No bio yet.'}
             </p>
           </div>

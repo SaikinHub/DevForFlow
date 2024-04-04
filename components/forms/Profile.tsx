@@ -87,7 +87,7 @@ const Profile = ({ clerkId, user }: Props) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-red-300" />
             </FormItem>
           )}
         />
@@ -107,7 +107,7 @@ const Profile = ({ clerkId, user }: Props) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-red-300" />
             </FormItem>
           )}
         />
@@ -128,7 +128,7 @@ const Profile = ({ clerkId, user }: Props) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-red-300" />
             </FormItem>
           )}
         />
@@ -148,7 +148,7 @@ const Profile = ({ clerkId, user }: Props) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-red-300" />
             </FormItem>
           )}
         />
@@ -159,7 +159,7 @@ const Profile = ({ clerkId, user }: Props) => {
           render={({ field }) => (
             <FormItem className="space-y-3.5">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Bio
+                Bio <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
                 <Textarea
@@ -168,7 +168,7 @@ const Profile = ({ clerkId, user }: Props) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-red-300" />
             </FormItem>
           )}
         />
