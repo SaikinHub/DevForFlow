@@ -20,8 +20,7 @@ const Pagination = ({ pageNumber, isNext, scroll }: Props) => {
 
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
-      key: 'page',
-      value: nextPageNumber.toString(),
+      values: [{ key: 'page', value: nextPageNumber.toString() }],
     });
 
     router.push(newUrl, { scroll: scroll === true });

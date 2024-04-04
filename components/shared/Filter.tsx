@@ -25,17 +25,16 @@ const Filter = ({ filters, otherClasses, containerClasses }: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const paramFilter = searchParams.get('filter')
+  const paramFilter = searchParams.get('filter');
 
   const handleUpdateParams = (value: string) => {
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
-      key: 'filter',
-      value
-    })
+      values: [{ key: 'filter', value }],
+    });
 
-    router.push(newUrl, {scroll: false})
-  }
+    router.push(newUrl, { scroll: false });
+  };
 
   return (
     <div className={`relative ${containerClasses}`}>
@@ -50,10 +49,14 @@ const Filter = ({ filters, otherClasses, containerClasses }: Props) => {
             <SelectValue placeholder="Select a Filter" />
           </div>
         </SelectTrigger>
-        <SelectContent className="background-light800_dark300 text-dark500_light700 border-none">
+        <SelectContent className="bg-light-900 dark:bg-dark-300 text-dark500_light700 border-none">
           <SelectGroup>
             {filters.map((item) => (
-              <SelectItem key={item.value} value={item.value}>
+              <SelectItem
+                key={item.value}
+                value={item.value}
+                className="focus:bg-light-800 dark:focus:bg-dark-400 cursor-pointer"
+              >
                 {item.name}
               </SelectItem>
             ))}

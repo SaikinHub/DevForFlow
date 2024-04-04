@@ -38,8 +38,7 @@ const GlobalSearch = () => {
       if (search) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
-          key: 'global',
-          value: search,
+          values: [{ key: 'global', value: search }],
         });
         router.push(newUrl, { scroll: false });
       } else {
@@ -82,7 +81,7 @@ const GlobalSearch = () => {
             }
           }}
           value={search}
-          className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none text-dark400_light700"
+          className="paragraph-regular no-focus placeholder border-none shadow-none outline-none text-dark400_light700 bg-transparent"
         />
       </div>
       {isOpen && <GlobalResult setIsOpen={setIsOpen} setSearch={setSearch} />}

@@ -70,13 +70,21 @@ export const getJoinedDate = (date: Date): string => {
 
 interface UrlQueryParams {
   params: string;
-  key: string;
-  value: string | null;
+  values: {
+    key: string;
+    value: string | null;
+  }[];
 }
 
-export const formUrlQuery = ({ params, key, value }: UrlQueryParams) => {
+export const formUrlQuery = ({ params, values }: UrlQueryParams) => {
   const currentUrl = qs.parse(params);
-  currentUrl[key] = value;
+  values.forEach((obj: any) => {
+    if (obj.value === '1') {
+      delete currentUrl[obj.key];
+    } else {
+      currentUrl[obj.key] = obj.value;
+    }
+  });
 
   return qs.stringifyUrl(
     {
