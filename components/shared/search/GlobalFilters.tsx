@@ -18,16 +18,14 @@ const GlobalFilters = () => {
       setActive('');
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
-        key: 'type',
-        value: null,
+        values: [{ key: 'type', value: null }],
       });
       router.push(newUrl, { scroll: false });
     } else {
       setActive(item);
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
-        key: 'type',
-        value: item.toLowerCase(),
+        values: [{ key: 'type', value: item.toLowerCase() }],
       });
       router.push(newUrl, { scroll: false });
     }
