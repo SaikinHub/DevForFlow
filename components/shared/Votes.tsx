@@ -10,6 +10,7 @@ import { formatNumberWithSuffix } from '@/lib/utils';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
+import { toast } from '../ui/use-toast';
 
 interface Props {
   type: string;
@@ -34,17 +35,27 @@ const Votes = ({
 }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
-  const handleSave = () => {
+  const handleSave = async () => {
     const params = {
       questionId: JSON.parse(itemId),
       userId: JSON.parse(userId),
       path: pathname,
     };
-    toggleSaveQuestion(params);
+    await toggleSaveQuestion(params);
+
+    return toast({
+      title: `Question ${
+        !hasSaved ? 'Saved in' : 'Removed from'
+      } your collection`,
+      variant: !hasSaved ? 'default' : 'destructive',
+    });
   };
   const handleVote = async (action: string) => {
     if (!userId) {
-      return;
+      return toast({
+        title: 'Please log in',
+        description: 'You must be logged in to perform this action',
+      });
     }
     const params = {
       itemId: JSON.parse(itemId),
@@ -67,6 +78,11 @@ const Votes = ({
         await DownvoteAnswer(params);
       }
     }
+
+    return toast({
+      title: `Upvote ${!hasUpvoted ? 'Sucessful' : 'Removed'}`,
+      variant: !hasUpvoted ? 'default' : 'destructive',
+    });
   };
 
   useEffect(() => {

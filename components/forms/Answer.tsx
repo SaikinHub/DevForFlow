@@ -18,6 +18,7 @@ import { Button } from '../ui/button';
 import Image from 'next/image';
 import { createAnswer } from '@/lib/actions/answer.action';
 import { usePathname } from 'next/navigation';
+import { useToast } from '../ui/use-toast';
 
 interface Props {
   question: string;
@@ -25,12 +26,14 @@ interface Props {
   authorId: string;
 }
 
-const Answer = ({ question, questionId, authorId }: Props) => {
+// add "question" to props to enable AI generated answers
+const Answer = ({ questionId, authorId }: Props) => {
   const pathname = usePathname();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittingAI, setIsSubmittingAI] = useState(false);
   const { mode } = useTheme();
   const editorRef = useRef(null);
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: {
@@ -52,6 +55,11 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         const editor = editorRef.current as any;
         editor.setContent('');
       }
+
+      toast({
+        title: 'Answered',
+        description: 'You have answered !',
+      });
     } catch (error) {
       console.log(error);
     } finally {
