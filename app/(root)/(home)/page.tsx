@@ -6,21 +6,44 @@ import { Button } from '@/components/ui/button';
 import { HomePageFilters } from '@/constants/filters';
 import HomeFilters from '@/components/home/HomeFilters';
 import NoResult from '@/components/NoResult';
-import { getQuestions } from '@/lib/actions/question.action';
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from '@/lib/actions/question.action';
 import { SearchParamsProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
 import type { Metadata } from 'next';
+import { auth } from '@clerk/nextjs';
 
 export const metadata: Metadata = {
   title: 'Home | DevForFlow',
 };
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const results = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
+  const { userId } = auth();
+  let results;
+
+  if (searchParams?.filter === 'recommended') {
+    if (userId) {
+      results = await getRecommendedQuestions({
+        userId: userId,
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1,
+      });
+    } else {
+      results = {
+        questions: [],
+        isNext: false,
+      };
+    }
+  } else {
+    results = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    });
+  }
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -50,8 +73,8 @@ export default async function Home({ searchParams }: SearchParamsProps) {
       </div>
       <HomeFilters />
       <div className="mt-10 flex w-full flex-col gap-6">
-        {results.questions.length > 0 ? (
-          results.questions.map((question) => (
+        {results ? (
+          results?.questions?.map((question) => (
             <QuestionCard
               key={question._id}
               _id={question._id}
