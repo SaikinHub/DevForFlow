@@ -16,20 +16,24 @@ const QuestionTab = async ({ searchParams, userId, clerkId }: Props) => {
   });
   return (
     <>
-      {result.questions.map((question) => (
-        <QuestionCard
-          key={question._id}
-          _id={question._id}
-          clerkId={clerkId}
-          title={question.title}
-          tags={question.tags}
-          author={question.author}
-          upvotes={question.upvotes}
-          views={question.views}
-          answers={question.answers}
-          createdAt={question.createdAt}
-        />
-      ))}
+      {result?.questions.length > 0 ? (
+        result.questions.map((question) => (
+          <QuestionCard
+            key={question._id}
+            _id={question._id}
+            clerkId={clerkId}
+            title={question.title}
+            tags={question.tags}
+            author={question.author}
+            upvotes={question.upvotes}
+            views={question.views}
+            answers={question.answers}
+            createdAt={question.createdAt}
+          />
+        ))
+      ) : (
+        <p className="text-dark400_light800">No questions asked yet...</p>
+      )}
       <div className="mt-10">
         <Pagination
           pageNumber={searchParams?.page ? +searchParams.page : 1}
