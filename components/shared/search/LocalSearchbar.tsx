@@ -33,8 +33,12 @@ const LocalSearchbar = ({
       if (search) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
-          key: 'q',
-          value: search,
+          values: [
+            {
+              key: 'q',
+              value: search,
+            },
+          ],
         });
         router.push(newUrl, { scroll: false });
       } else {
