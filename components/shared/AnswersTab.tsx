@@ -17,17 +17,21 @@ const AnswersTab = async ({ searchParams, userId, clerkId }: Props) => {
 
   return (
     <>
-      {result.answers.map((item) => (
-        <AnswerCard
-          key={item._id}
-          _id={item._id}
-          clerkId={clerkId}
-          question={item.question}
-          author={item.author}
-          upvotes={item.upvotes}
-          createdAt={item.createdAt}
-        />
-      ))}
+      {result?.answers.length > 0 ? (
+        result.answers.map((item) => (
+          <AnswerCard
+            key={item._id}
+            _id={item._id}
+            clerkId={clerkId}
+            question={item.question}
+            author={item.author}
+            upvotes={item.upvotes}
+            createdAt={item.createdAt}
+          />
+        ))
+      ) : (
+        <p className="text-dark400_light800">No questions answered yet...</p>
+      )}
       <div className="mt-10">
         <Pagination
           pageNumber={searchParams?.page ? +searchParams.page : 1}
