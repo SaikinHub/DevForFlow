@@ -7,6 +7,11 @@ import { TagFilters } from '@/constants/filters';
 import { getAllTags } from '@/lib/actions/tag.actions';
 import { SearchParamsProps } from '@/types';
 import React from 'react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Tags | DevForFlow',
+};
 
 const page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAllTags({

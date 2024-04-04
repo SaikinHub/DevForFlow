@@ -1,3 +1,9 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Jobs | DevForFlow',
+};
+
 const page = () => {
   return (
     <div className="body-regular text-dark500_light700 my-3.5 max-w-md">

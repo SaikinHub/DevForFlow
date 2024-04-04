@@ -9,6 +9,11 @@ import NoResult from '@/components/NoResult';
 import { getQuestions } from '@/lib/actions/question.action';
 import { SearchParamsProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Home | DevForFlow',
+};
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const results = await getQuestions({

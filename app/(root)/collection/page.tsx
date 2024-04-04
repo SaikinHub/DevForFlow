@@ -7,6 +7,11 @@ import { auth } from '@clerk/nextjs';
 import { getSavedQuestions } from '@/lib/actions/user.action';
 import { SearchParamsProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Collections | DevForFlow',
+};
 
 export default async function Page({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
