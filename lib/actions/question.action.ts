@@ -46,7 +46,7 @@ export async function getQuestions(params: GetQuestionsParams) {
 
     const skipAmount = (page - 1) * pageSize;
 
-    let query: FilterQuery<typeof Question> = {};
+    const query: FilterQuery<typeof Question> = {};
 
     if (searchQuery) {
       query.$or = [
